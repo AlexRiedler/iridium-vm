@@ -6,6 +6,7 @@ pub enum Opcode {
     MUL,
     DIV,
     HLT,
+    JMP,
     IGL,
 }
 
@@ -31,6 +32,7 @@ impl From<u8> for Opcode {
             3 => return Opcode::MUL,
             4 => return Opcode::DIV,
             5 => return Opcode::HLT,
+            6 => return Opcode::JMP,
             _ => return Opcode::IGL
         }
     }
@@ -74,6 +76,12 @@ mod tests {
     fn test_create_div() {
       let instruction = Instruction::new(Opcode::DIV);
       assert_eq!(instruction.opcode, Opcode::DIV);
+    }
+
+    #[test]
+    fn test_create_jmp() {
+      let instruction = Instruction::new(Opcode::JMP);
+      assert_eq!(instruction.opcode, Opcode::JMP);
     }
 
     #[test]
