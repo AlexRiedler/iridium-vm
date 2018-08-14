@@ -1,6 +1,7 @@
 #[derive(Debug, PartialEq)]
 pub enum Opcode {
     LOAD,
+    ADD,
     HLT,
     IGL,
 }
@@ -22,6 +23,7 @@ impl From<u8> for Opcode {
     fn from(v: u8) -> Self {
         match v {
             0 => return Opcode::LOAD,
+            1 => return Opcode::ADD,
             5 => return Opcode::HLT,
             _ => return Opcode::IGL
         }
@@ -42,6 +44,12 @@ mod tests {
     fn test_create_load() {
       let instruction = Instruction::new(Opcode::LOAD);
       assert_eq!(instruction.opcode, Opcode::LOAD);
+    }
+
+    #[test]
+    fn test_create_add() {
+      let instruction = Instruction::new(Opcode::ADD);
+      assert_eq!(instruction.opcode, Opcode::ADD);
     }
 
     #[test]

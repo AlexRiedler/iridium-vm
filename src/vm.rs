@@ -37,6 +37,12 @@ impl VM {
                 let number = self.next_two_bytes() as u32;
                 self.registers[register] = number as i32;
             },
+            Opcode::ADD => {
+                let register_a = self.registers[self.next_byte() as usize];
+                let register_b = self.registers[self.next_byte() as usize];
+                let result_register = self.next_byte() as usize;
+                self.registers[result_register] = register_a + register_b;
+            },
             Opcode::HLT => {
                 println!("HLT encountered");
                 false;
@@ -82,33 +88,41 @@ mod tests {
 
     #[test]
     fn test_create_vm() {
-      let test_vm = VM::new();
-      assert_eq!(test_vm.registers[0], 0)
+        let test_vm = VM::new();
+        assert_eq!(test_vm.registers[0], 0)
     }
 
     #[test]
     fn test_opcode_hlt() {
-      let mut test_vm = VM::new();
-      let test_bytes = vec![5,0,0,0];
-      test_vm.program = test_bytes;
-      test_vm.run();
-      assert_eq!(test_vm.pc, 1);
+        let mut test_vm = VM::new();
+        let test_bytes = vec![5,0,0,0];
+        test_vm.program = test_bytes;
+        test_vm.run();
+        assert_eq!(test_vm.pc, 1);
     }
 
     #[test]
     fn test_opcode_igl() {
-      let mut test_vm = VM::new();
-      let test_bytes = vec![200,0,0,0];
-      test_vm.program = test_bytes;
-      test_vm.run();
-      assert_eq!(test_vm.pc, 1);
+        let mut test_vm = VM::new();
+        let test_bytes = vec![200,0,0,0];
+        test_vm.program = test_bytes;
+        test_vm.run();
+        assert_eq!(test_vm.pc, 1);
     }
 
     #[test]
     fn test_load_opcode() {
-      let mut test_vm = get_test_vm();
-      test_vm.program = vec![0, 0, 1, 244]; // Remember, this is how we represent 500 using two u8s in little endian format
-      test_vm.run();
-      assert_eq!(test_vm.registers[0], 500);
+        let mut test_vm = get_test_vm();
+        test_vm.program = vec![0, 0, 1, 244]; // Remember, this is how we represent 500 using two u8s in little endian format
+        test_vm.run();
+        assert_eq!(test_vm.registers[0], 500);
+    }
+
+    #[test]
+    fn test_add_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.program = vec![1, 0, 1, 2];
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 15);
     }
 }
