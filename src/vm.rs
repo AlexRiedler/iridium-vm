@@ -4,7 +4,8 @@ pub struct VM {
     registers: [i32; 32],
     pc: usize,
     program: Vec<u8>,
-    remainder: usize
+    remainder: usize,
+    equal_flag: bool
 }
 
 impl VM {
@@ -13,7 +14,8 @@ impl VM {
             registers: [0; 32],
             program: vec![],
             pc: 0,
-            remainder: 0
+            remainder: 0,
+            equal_flag: false
         }
     }
 
@@ -75,6 +77,19 @@ impl VM {
             Opcode::JMPB => {
                 let value = self.registers[self.next_byte() as usize] as usize;
                 self.pc -= value;
+            },
+            Opcode::JMPE => {
+                let target = self.registers[self.next_byte() as usize] as usize;
+                self.pc += 2;
+                if self.equal_flag {
+                    self.pc = target as usize;
+                }
+            },
+            Opcode::EQ => {
+                let register_a = self.registers[self.next_byte() as usize];
+                let register_b = self.registers[self.next_byte() as usize];
+                self.equal_flag = register_a == register_b;
+                self.pc += 1
             },
             Opcode::HLT => {
                 println!("HLT encountered");
@@ -209,5 +224,28 @@ mod tests {
         test_vm.run_once();
         test_vm.run_once();
         assert_eq!(test_vm.pc, 0);
+    }
+
+    #[test]
+    fn test_jeq_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.registers[0] = 7;
+        test_vm.equal_flag = true;
+        test_vm.program = vec![9, 0, 0, 0, 200, 0, 0, 0, 200, 0, 0, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.pc, 7);
+    }
+
+    #[test]
+    fn test_eq_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.registers[0] = 10;
+        test_vm.registers[1] = 10;
+        test_vm.program = vec![10, 0, 1, 0, 10, 0, 1, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.equal_flag, true);
+        test_vm.registers[1] = 20;
+        test_vm.run_once();
+        assert_eq!(test_vm.equal_flag, false);
     }
 }

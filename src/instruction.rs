@@ -9,6 +9,13 @@ pub enum Opcode {
     JMP,
     JMPF,
     JMPB,
+    JMPE,
+    EQ,
+    NEQ,
+    GTE,
+    LTE,
+    GT,
+    LT,
     IGL,
 }
 
@@ -37,6 +44,13 @@ impl From<u8> for Opcode {
             6 => return Opcode::JMP,
             7 => return Opcode::JMPF,
             8 => return Opcode::JMPB,
+            9 => return Opcode::JMPE,
+            10 => return Opcode::EQ,
+            11 => return Opcode::NEQ,
+            12 => return Opcode::GTE,
+            13 => return Opcode::LTE,
+            14 => return Opcode::GT,
+            15 => return Opcode::LT,
             _ => return Opcode::IGL
         }
     }
@@ -98,6 +112,48 @@ mod tests {
     fn test_create_jmpb() {
       let instruction = Instruction::new(Opcode::JMPB);
       assert_eq!(instruction.opcode, Opcode::JMPB);
+    }
+
+    #[test]
+    fn test_create_jmpe() {
+      let instruction = Instruction::new(Opcode::JMPE);
+      assert_eq!(instruction.opcode, Opcode::JMPE);
+    }
+
+    #[test]
+    fn test_create_eq() {
+      let instruction = Instruction::new(Opcode::EQ);
+      assert_eq!(instruction.opcode, Opcode::EQ);
+    }
+
+    #[test]
+    fn test_create_neq() {
+      let instruction = Instruction::new(Opcode::NEQ);
+      assert_eq!(instruction.opcode, Opcode::NEQ);
+    }
+
+    #[test]
+    fn test_create_gte() {
+      let instruction = Instruction::new(Opcode::GTE);
+      assert_eq!(instruction.opcode, Opcode::GTE);
+    }
+
+    #[test]
+    fn test_create_lte() {
+      let instruction = Instruction::new(Opcode::LTE);
+      assert_eq!(instruction.opcode, Opcode::LTE);
+    }
+
+    #[test]
+    fn test_create_gt() {
+      let instruction = Instruction::new(Opcode::GT);
+      assert_eq!(instruction.opcode, Opcode::GT);
+    }
+
+    #[test]
+    fn test_create_lt() {
+      let instruction = Instruction::new(Opcode::LT);
+      assert_eq!(instruction.opcode, Opcode::LT);
     }
 
     #[test]
