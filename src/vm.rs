@@ -68,6 +68,14 @@ impl VM {
                 let target = self.registers[self.next_byte() as usize];
                 self.pc = target as usize;
             },
+            Opcode::JMPF => {
+                let value = self.registers[self.next_byte() as usize] as usize;
+                self.pc += value;
+            },
+            Opcode::JMPB => {
+                let value = self.registers[self.next_byte() as usize] as usize;
+                self.pc -= value;
+            },
             Opcode::HLT => {
                 println!("HLT encountered");
                 false;
@@ -182,5 +190,24 @@ mod tests {
         test_vm.program = vec![6, 0, 0, 0];
         test_vm.run_once();
         assert_eq!(test_vm.pc, 1);
+    }
+
+    #[test]
+    fn test_jmpf_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.registers[0] = 2;
+        test_vm.program = vec![7, 0, 0, 0, 5, 0, 0, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.pc, 4);
+    }
+
+    #[test]
+    fn test_jmpb_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.registers[1] = 6;
+        test_vm.program = vec![0, 0, 0, 10, 8, 1, 0, 0];
+        test_vm.run_once();
+        test_vm.run_once();
+        assert_eq!(test_vm.pc, 0);
     }
 }
