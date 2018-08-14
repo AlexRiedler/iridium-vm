@@ -3,7 +3,8 @@ use instruction::Opcode;
 pub struct VM {
     registers: [i32; 32],
     pc: usize,
-    program: Vec<u8>
+    program: Vec<u8>,
+    remainder: usize
 }
 
 impl VM {
@@ -11,7 +12,8 @@ impl VM {
         VM {
             registers: [0; 32],
             program: vec![],
-            pc: 0
+            pc: 0,
+            remainder: 0
         }
     }
 
@@ -42,6 +44,25 @@ impl VM {
                 let register_b = self.registers[self.next_byte() as usize];
                 let result_register = self.next_byte() as usize;
                 self.registers[result_register] = register_a + register_b;
+            },
+            Opcode::SUB => {
+                let register_a = self.registers[self.next_byte() as usize];
+                let register_b = self.registers[self.next_byte() as usize];
+                let result_register = self.next_byte() as usize;
+                self.registers[result_register] = register_a - register_b;
+            },
+            Opcode::MUL => {
+                let register_a = self.registers[self.next_byte() as usize];
+                let register_b = self.registers[self.next_byte() as usize];
+                let result_register = self.next_byte() as usize;
+                self.registers[result_register] = register_a * register_b;
+            },
+            Opcode::DIV => {
+                let register_a = self.registers[self.next_byte() as usize];
+                let register_b = self.registers[self.next_byte() as usize];
+                let result_register = self.next_byte() as usize;
+                self.registers[result_register] = register_a / register_b;
+                self.remainder = (register_a % register_b) as usize;
             },
             Opcode::HLT => {
                 println!("HLT encountered");
@@ -124,5 +145,29 @@ mod tests {
         test_vm.program = vec![1, 0, 1, 2];
         test_vm.run();
         assert_eq!(test_vm.registers[2], 15);
+    }
+
+    #[test]
+    fn test_sub_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.program = vec![2, 1, 0, 2];
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 5);
+    }
+
+    #[test]
+    fn test_mul_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.program = vec![3, 0, 1, 2];
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 50);
+    }
+
+    #[test]
+    fn test_div_opcode() {
+        let mut test_vm = get_test_vm();
+        test_vm.program = vec![4, 1, 0, 2];
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 2);
     }
 }

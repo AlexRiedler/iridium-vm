@@ -2,6 +2,9 @@
 pub enum Opcode {
     LOAD,
     ADD,
+    SUB,
+    MUL,
+    DIV,
     HLT,
     IGL,
 }
@@ -24,6 +27,9 @@ impl From<u8> for Opcode {
         match v {
             0 => return Opcode::LOAD,
             1 => return Opcode::ADD,
+            2 => return Opcode::SUB,
+            3 => return Opcode::MUL,
+            4 => return Opcode::DIV,
             5 => return Opcode::HLT,
             _ => return Opcode::IGL
         }
@@ -50,6 +56,24 @@ mod tests {
     fn test_create_add() {
       let instruction = Instruction::new(Opcode::ADD);
       assert_eq!(instruction.opcode, Opcode::ADD);
+    }
+
+    #[test]
+    fn test_create_sub() {
+      let instruction = Instruction::new(Opcode::SUB);
+      assert_eq!(instruction.opcode, Opcode::SUB);
+    }
+
+    #[test]
+    fn test_create_mul() {
+      let instruction = Instruction::new(Opcode::MUL);
+      assert_eq!(instruction.opcode, Opcode::MUL);
+    }
+
+    #[test]
+    fn test_create_div() {
+      let instruction = Instruction::new(Opcode::DIV);
+      assert_eq!(instruction.opcode, Opcode::DIV);
     }
 
     #[test]
